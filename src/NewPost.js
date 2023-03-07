@@ -1,18 +1,21 @@
 import React from 'react'
 
-const NewPost = ({handleSubmit , postTitle , setPosttitle , postBody , setPostbody}) => {
+const NewPost = ({handleSubmit , postTitle , setPostTitle , postBody , setPostBody}) => {
+
   return (
     <main className='PostForm'>
-        <h1>NewPost</h1>
+        <h1 style={{
+          marginLeft : "10px"}
+          }>NewPost</h1>
 
-        <form className='newPost' onSubmit={(e)=> e.preventDefault()}>
+        <form className='newPost' onSubmit={handleSubmit} action="/">
           <label htmlFor="postTitle">Post Title : </label>
           <input
             id='postTitle' 
             type="text" 
             placeholder = 'Post Title'
             value={postTitle}
-            onChange = {(e)=> setPosttitle(e.target.value)} />
+            onChange = {(e)=> setPostTitle(e.target.value)} />
 
             <label htmlFor="postBody">Post Body :</label>
             <textarea 
@@ -22,12 +25,12 @@ const NewPost = ({handleSubmit , postTitle , setPosttitle , postBody , setPostbo
             rows="10"
             placeholder='Enter Your Blog Text Here ...'
             value={postBody}
-            onChange = {(e) => setPostbody(e.target.value)}>
-
+            onChange = {(e) => setPostBody(e.target.value)}>
             </textarea>
+        
+        <button type='submit'>Submit</button>
         </form>
 
-        <button type='submit'>Submit</button>
     </main>
   )
 }
