@@ -1,9 +1,20 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useParams , Link } from 'react-router-dom'
+import DataContext from './context/DataContext';
+import api from './api/Posts'
+import {useHistory} from 'react-router-dom';
 
-const PostPage = ({posts , handleDelete}) => {
+const PostPage = () => {
+  const {posts , setPosts} = useContext(DataContext);
   const {id} = useParams();
   const post = posts.find(post => (post.id).toString() === id );
+  const history = useHistory();
+  const handleDelete = async (id) => {
+    await api.delete(`/Posts/${id}`);
+    const PostList = posts.filter(post => post.id !== id );
+    setPosts(PostList);
+    history.push('/');
+  }
 
   return (
     <main>

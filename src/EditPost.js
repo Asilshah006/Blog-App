@@ -1,20 +1,43 @@
-import React from 'react'
-import { useEffect } from 'react';
+import React, { useContext } from 'react'
+import { useEffect , useState } from 'react';
 import { useParams , Link } from 'react-router-dom';
-import Posts from './api/Posts';
+import api from './api/Posts';
+import DataContext from './context/DataContext';
+import { format } from 'date-fns';
+import { useHistory } from 'react-router-dom';
 
-const EditPost = (
-    { posts , handleEdit , editTitle , setEditTitle , editBody , setEditBody }
-    ) => {
+const EditPost = () => {
+  const[editTitle , setEditTitle] = useState("");
+  const[editBody , setEditBody] = useState('');
+  const { posts , setPosts } = useContext(DataContext);
     const {id} = useParams();
     const post = posts.find(post => (post.id).toString() === id)
+    const history = useHistory();
+    
+  const handleEdit = async (id) =>{
+    const datetime = format(new Date() , "MMMM dd, yyyy pp");
+    const UpdatedPost = {id , title : editTitle , datetime , body : editBody};
+
+    try{
+      const response = api.put(`/Posts/${id}` , UpdatedPost)
+      setPosts(posts.map(post =>
+        (post.id) === id ? {...response.data} : post
+      ))
+      setEditTitle('');
+      setEditBody('');
+      history.push('/');
+    }catch(err){
+      console.log(`Error : ${err.message}` );
+    }
+  }
 
     useEffect(()=>{
         if(post){
             setEditTitle(post.title);
             setEditBody(post.body);
         }
-    } , [posts , setEditTitle , setEditBody])
+    } , [post , setEditTitle , setEditBody])
+
   return (
     <main className='PostForm'>
         { editTitle &&

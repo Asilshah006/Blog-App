@@ -29,7 +29,6 @@ const useAxiosFetchAPI = (dataurl) =>{
                 {isMounted && setTimeout(()=> setIsLoading(false) , 2000)}
             }   
         }
-
         FetchAPI(dataurl);
 
         const cleanUp = () =>{

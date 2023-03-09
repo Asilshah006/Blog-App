@@ -1,8 +1,35 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import DataContext from './context/DataContext'
+import { useState } from 'react'
+import { format } from 'date-fns'
+import { useHistory } from 'react-router-dom'
+import api from './api/Posts'
 
-const NewPost = ({handleSubmit , postTitle , setPostTitle , postBody , setPostBody}) => {
+const NewPost = () => {
+    const {posts , setPosts} = useContext(DataContext)
+    const[postTitle , setPostTitle] = useState("");
+    const[postBody , setPostBody] = useState('');
+    const {history} = useHistory();
+    
+  const handleSubmit = async (e) =>{
+    e.preventDefault();
+    const id = posts.length ? posts[posts.length -1].id + 1 : 1
+    const datetime = format(new Date(),  "MMMM dd, yyyy pp");
+    const newPost = {id , title: postTitle , datetime , body: postBody} 
 
-  return (
+    try{
+        const response = await api.post("/Posts" , newPost)
+        const allPost = [...posts , response.data];
+        setPosts(allPost)
+        setPostTitle('');
+        setPostBody('');
+        history.push('/');
+    }catch(err){
+      console.log(err.message);
+    }
+}
+  
+    return (
     <main className='PostForm'>
         <h1 style={{
           marginLeft : "10px"}
