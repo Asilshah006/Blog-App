@@ -7,6 +7,8 @@ import PostPage from "./PostPage";
 import About from "./About";
 import Missing from "./Missing";
 import EditPost from "./EditPost";
+import useWindowSize from "./api/hooks/useWindowSize";
+import useAxiosFetchAPI from "./api/hooks/UseAxiosFetchAPI";
 import api from "./api/Posts";
 import { format } from "date-fns";
 import {Route , Switch , useHistory} from 'react-router-dom';
@@ -23,26 +25,12 @@ function App() {
   const[editTitle , setEditTitle] = useState("");
   const[editBody , setEditBody] = useState('');
   const history = useHistory();
+  const {width} = useWindowSize();
+  const {data , fetchError , isLoading} = useAxiosFetchAPI("http://localhost:3500/Posts");
 
   useEffect(()=>{
-    const fetchRequest = async () =>{
-      try{
-        const response = await api.get('/Posts');
-        setPosts(response.data);
-      }catch(err){
-        if(err.data){
-          console.log(err.response.data);
-          console.log(err.response.status);
-          console.log(err.response.header);
-        }else{
-          console.log(`Error ${err.message}`);
-        }
-      }
-    } 
-
-    fetchRequest();
-    
-  },[])
+    setPosts(data);
+  },[data])
   
   useEffect(()=>{
     const filteredResults = posts.filter(post => 
@@ -97,12 +85,13 @@ function App() {
   
   return (
     <div className="App">
-      <Header title = "React Js Blogs" /> 
+      <Header title = "React Js Blogs" width={width} /> 
       <Nav search ={search} setSearch ={setSearch} />
       <Switch>
         <Route exact path="/">
           <Home 
-            posts = {searchResults}/>
+            posts = {searchResults}
+            />
         </Route>
 
        <Route exact path="/post">
@@ -144,11 +133,11 @@ function App() {
       }}>Button
       </button>
 
-      <p>{postTitle}</p>
+      <p>{width}</p>
 
 
       <Footer />
-
+      
 
     </div>
   );
